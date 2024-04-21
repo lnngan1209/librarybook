@@ -5,6 +5,14 @@ import vue from '@vitejs/plugin-vue'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  buildModules: [
+    '@ant-design-vue/nuxt'
+  ],
+
+  antd: {
+    // Sử dụng toàn bộ các component của Ant Design Vue
+    // Không cần cấu hình thêm cho component cụ thể
+  },
   plugins: [
     vue(),
   ],

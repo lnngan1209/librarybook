@@ -20,17 +20,17 @@ app.get("/", (req, res)=> {
     res.json({ message: "Welcom to librarybooks-backend" });
 });
 
-const docGiaRoutes = require('./app/routes/docGiaRoutes');
-const sachRoutes = require('./app/routes/sachRoutes');
-const nhaXuatBanRoutes = require('./app/routes/nhaXuatBanRoutes');
-const theoDoiMuonSachRoutes = require('./app/routes/theoDoiMuonSachRoutes');
-const nhanVienRoutes = require('./app/routes/nhanVienRoutes');
+const readerRoutes = require('./app/routes/readerRoutes');
+const bookRoutes = require('./app/routes/bookRoutes');
+const publisherRoutes = require('./app/routes/publisherRoutes');
+const borrowRoutes = require('./app/routes/borrowRoutes');
+const staffRoutes = require('./app/routes/staffRoutes');
 
-app.use('/api/docgia', docGiaRoutes);
-app.use('/api/sach', sachRoutes);
-app.use('/api/nhaxuatban', nhaXuatBanRoutes);
-app.use('/api/theodoimuonsach', theoDoiMuonSachRoutes);
-app.use('/api/nhanvien', nhanVienRoutes);
+app.use('/api/reader', readerRoutes);
+app.use('/api/book', bookRoutes);
+app.use('/api/publisher', publisherRoutes);
+app.use('/api/borrow', borrowRoutes);
+app.use('/api/staff', staffRoutes);
 
 app.use((req, res, next) => {
     return next(new ApiError(404, "Resource not found"));

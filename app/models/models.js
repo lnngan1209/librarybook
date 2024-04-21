@@ -1,47 +1,45 @@
 const mongoose = require('mongoose');
 
-const docGiaSchema = new mongoose.Schema({
-    HoLot: String,
-    Ten: String,
-    NgaySinh: Date,
-    Phai: String,
-    DiaChi: String,
-    DienThoai: String
+const readerSchema = new mongoose.Schema({
+    name: String,
+    birthday: Date,
+    gender: String,
+    address: String,
+    phone: String
 });
 
-const sachSchema = new mongoose.Schema({
-    TenSach: String,
-    DonGia: Number,
-    SoQuyen: Number,
-    NamXuatBan: Number,
-    MaNXB: String,
-    NguonGoc: String
+const bookSchema = new mongoose.Schema({
+    name: String,
+    price: Number,
+    quantity: Number,
+    publication_year: Number,
+    publisher_id: String,
 });
 
-const nhaXuatBanSchema = new mongoose.Schema({
-    TenNXB: String,
-    DiaChi: String
+const publisherSchema = new mongoose.Schema({
+    name: String,
+    address: String
 });
 
-const theoDoiMuonSachSchema = new mongoose.Schema({
-    MaDocGia: { type: String, required: true },
-    MaSach: { type: String, required: true },
-    NgayMuon: Date,
-    NgayTra: Date
+const borrowSchema = new mongoose.Schema({
+    reader_id: { type: String, required: true },
+    book_id: { type: String, required: true },
+    borrow_date: Date,
+    due_date: Date
 });
 
-const nhanVienSchema = new mongoose.Schema({
-    HoTenNV: String,
+const staffSchema = new mongoose.Schema({
+    name: String,
     Password: String,
-    ChucVu: String,
-    DiaChi: String,
-    SoDienThoai: String
+    position: String,
+    address: String,
+    phone: String
 });
 
-const DocGia = mongoose.model('DocGia', docGiaSchema);
-const Sach = mongoose.model('Sach', sachSchema);
-const NhaXuatBan = mongoose.model('NhaXuatBan', nhaXuatBanSchema);
-const TheoDoiMuonSach = mongoose.model('TheoDoiMuonSach', theoDoiMuonSachSchema);
-const NhanVien = mongoose.model('NhanVien', nhanVienSchema);
+const reader = mongoose.model('Reader', readerSchema);
+const book = mongoose.model('Book', bookSchema);
+const publisher = mongoose.model('Publisher', publisherSchema);
+const borrow = mongoose.model('Borrow', borrowSchema);
+const staff = mongoose.model('Staff', staffSchema);
 
-module.exports = { DocGia, Sach, NhaXuatBan, TheoDoiMuonSach, NhanVien };
+module.exports = { reader, book, publisher, borrow, staff };

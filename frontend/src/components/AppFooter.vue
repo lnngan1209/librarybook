@@ -37,51 +37,6 @@
     </section>
     <!-- Section: Social media -->
 
-    <!-- Section: Form -->
-    <section class="">
-      <form action="">
-        <!--Grid row-->
-        <div class="row d-flex justify-content-center">
-          <!--Grid column-->
-          <div class="col-auto">
-            <p class="pt-2">
-              <strong>Đăng ký để nhận tin tức từ chúng tôi:</strong>
-            </p>
-          </div>
-          <!--Grid column-->
-
-          <!--Grid column-->
-          <div class="col-md-5 col-12">
-            <!-- Email input -->
-            <div class="form-outline form-white mb-4">
-              <input type="email" id="form5Example21" class="form-control" />
-              <label class="form-label" for="form5Example21">Địa chỉ Email</label>
-            </div>
-          </div>
-          <!--Grid column-->
-
-          <!--Grid column-->
-          <div class="col-auto">
-            <!-- Submit button -->
-            <button type="submit" class="btn btn-outline-light mb-4">
-              Đăng ký
-            </button>
-          </div>
-          <!--Grid column-->
-        </div>
-        <!--Grid row-->
-      </form>
-    </section>
-    <!-- Section: Form -->
-
-    <!-- Section: Text -->
-    <section class="mb-4">
-      <p>
-        Trang web được tạo ra để cung cấp cho độc giả những quyển sách hay 
-      </p>
-    </section>
-    <!-- Section: Text -->
-
     <!-- Section: Links -->
     <section class="">
       <!--Grid row-->
@@ -134,12 +89,6 @@
 
           <ul class="list-unstyled mb-0">
             <li>
-              <a href="#!" class="text-white">Đặt hàng</a>
-            </li>
-            <li>
-              <a href="#!" class="text-white">Đăng nhập</a>
-            </li>
-            <li>
               <a href="#!" class="text-white">Cài đặt</a>
             </li>
             <li>
@@ -176,12 +125,6 @@
   </div>
   <!-- Grid container -->
 
-  <!-- Copyright -->
-  <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
-    © 2024 Copyright:
-    <a class="text-white" href="https://mdbootstrap.com/">MDBootstrap.com</a>
-  </div>
-  <!-- Copyright -->
 </footer>
 <!-- Footer -->
 </template>
@@ -191,7 +134,3 @@
         name: "AppFooter"
     }
 </script>
-
-<style>
-
-</style>

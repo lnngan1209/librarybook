@@ -1,186 +1,184 @@
 const mongoose = require('mongoose');
 const config = require("./app/config");
-const { DocGia, Sach, NhaXuatBan, TheoDoiMuonSach, NhanVien } = require('./app/models/models');
+const { reader, book, publisher, borrow, staff } = require('./app/models/models');
 const faker = require('faker');
 
 const deleteAllData = async () => {
     try {
-        await NhaXuatBan.deleteMany({});
-        console.log("Đã xóa tất cả dữ liệu từ bảng Nhà Xuất Bản.");
+        await publisher.deleteMany({});
+        console.log("All data from the Publisher table has been deleted.");
 
-        await Sach.deleteMany({});
-        console.log("Đã xóa tất cả dữ liệu từ bảng Sách.");
+        await book.deleteMany({});
+        console.log("All data from the Book table has been deleted.");
 
-        await DocGia.deleteMany({});
-        console.log("Đã xóa tất cả dữ liệu từ bảng Độc Giả.");
+        await reader.deleteMany({});
+        console.log("All data from the Reader table has been deleted.");
 
-        await TheoDoiMuonSach.deleteMany({});
-        console.log("Đã xóa tất cả dữ liệu từ bảng Theo Dõi Mượn Sách.");
+        await borrow.deleteMany({});
+        console.log("All data from the Borrow table has been deleted.");
         
-        await NhanVien.deleteMany({});
-        console.log("Đã xóa tất cả dữ liệu từ bảng Nhân Viên.");
+        await staff.deleteMany({});
+        console.log("All data from the Staff table has been deleted.");
 
     } catch (error) {
-        console.error("Lỗi khi xóa dữ liệu:", error.message);
+        console.error("Error when deleting data", error.message);
     }
 };
 
-const createFakeDocGia = async () => {
-    const numberOfFakeDocGia = 10;
+const createFakeReader = async () => {
+    const numberOfFakeReader = 10;
 
-    for (let i = 0; i < numberOfFakeDocGia; i++) {
-        const fakeDocGiaData = {
-            HoLot: faker.name.firstName(),
-            Ten: faker.name.lastName(),
-            NgaySinh: faker.date.between('1950-01-01', '2005-12-31'),
-            Phai: faker.random.arrayElement(['Nam', 'Nữ']),
-            DiaChi: faker.address.streetAddress(),
-            DienThoai: faker.phone.phoneNumber()
+    for (let i = 0; i < numberOfFakeReader; i++) {
+        const fakeReaderData = {
+            name: faker.name.lastName(),
+            birthday: faker.date.between('1950-01-01', '2005-12-31'),
+            gender: faker.random.arrayElement(['male', 'female']),
+            address: faker.address.streetAddress(),
+            phone: "001" + faker.phone.phoneNumberFormat(1).replace(/[-()\s]/g, '').slice(1, 11)
         };
-        const newDocGia = new DocGia(fakeDocGiaData);
-        await newDocGia.save();
+        const newReader = new reader(fakeReaderData);
+        await newReader.save();
     }
-    console.log("Dữ liệu Độc Giả giả mạo đã được thêm vào CSDL thành công.");
+    console.log("Mock Reader data has been successfully added to the database.");
 };
 
-const createFakeNXB = async () => {
+const createFakePublisher = async () => {
     try {
-        const numFakeNXB = 10;
+        const numFakePublisher = 10;
         
-        const fakeNXBData = [];
+        const fakePublisherData = [];
         
-        for (let i = 0; i < numFakeNXB; i++) {
-            const fakeNXB = {
-                TenNXB: faker.company.companyName(),
-                DiaChi: faker.address.streetAddress()
+        for (let i = 0; i < numFakePublisher; i++) {
+            const fakePublisher = {
+                name: faker.company.companyName(),
+                address: faker.address.streetAddress()
             };
-            fakeNXBData.push(fakeNXB);
+            fakePublisherData.push(fakePublisher);
         }
         
-        await NhaXuatBan.insertMany(fakeNXBData);
-        console.log("Dữ liệu NXB giả mạo đã được thêm vào CSDL thành công.");
+        await publisher.insertMany(fakePublisherData);
+        console.log("Mock Publisher data has been successfully added to the database.");
     } catch (error) {
-        console.error("Lỗi khi thêm dữ liệu giả mạo cho NXB:", error.message);
+        console.error("Error when adding mock data for Publisher", error.message);
     }
 };
 
-const getAllMaNXB = async () => {
+const getAllPublisher_id = async () => {
     try {
-        const nhaXuatBanList = await NhaXuatBan.find({}, '_id');
-        return nhaXuatBanList.map(nxb => nxb._id);
+        const publishList = await publisher.find({}, '_id');
+        return publishList.map(publisher => publisher._id);
     } catch (error) {
-        console.error("Lỗi khi lấy danh sách mã NXB:", error.message);
+        console.error("Error when fetching the list of Publisher Codes", error.message);
         return [];
     }
 };
 
-const createFakeSach = async () => {
+const createFakeBook = async () => {
     try {
-        const fakeSachData = [];
-        const numFakeSach = 50;
-        const maNXBList = await getAllMaNXB();
+        const fakeBookData = [];
+        const numFakeBook = 50;
+        const publisher_idList = await getAllPublisher_id();
 
-        for (let i = 0; i < numFakeSach; i++) {
-            const fakeSach = {
-                TenSach: faker.lorem.words(),
-                DonGia: faker.datatype.number({ min: 20, max: 500 }),
-                SoQuyen: faker.datatype.number({ min: 1, max: 100 }),
-                NamXuatBan: faker.datatype.number({ min: 2000, max: 2023 }),
-                MaNXB: faker.random.arrayElement(maNXBList),
-                NguonGoc: faker.random.arrayElement([faker.name.lastName(), "Ngôn ngữ", "Khoa học", "Văn học"])
+        for (let i = 0; i < numFakeBook; i++) {
+            const fakeBook = {
+                name: faker.lorem.words(),
+                price: faker.datatype.number({ min: 20, max: 100 }),
+                quantity: faker.datatype.number({ min: 1, max: 100 }),
+                publication_year: faker.datatype.number({ min: 2000, max: 2023 }),
+                publisher_id: faker.random.arrayElement(publisher_idList)
             };
-            fakeSachData.push(fakeSach);
+            fakeBookData.push(fakeBook);
         }
 
-        await Sach.insertMany(fakeSachData);
-        console.log("Dữ liệu sách giả mạo đã được thêm vào CSDL thành công.");
+        await book.insertMany(fakeBookData);
+        console.log("Mock book data has been successfully added to the database");
     } catch (error) {
-        console.error("Lỗi khi thêm dữ liệu giả mạo cho sách:", error.message);
+        console.error("Error when adding mock data for books", error.message);
     }
 };
 
-const createFakeNhanVien = async () => {
+const createFakeStaff = async () => {
     try {
-        const numFakeNhanVien = 5;
+        const numFakeStaff = 5;
         
-        const fakeNhanVienData = [];
+        const fakeStaffData = [];
         
-        for (let i = 0; i < numFakeNhanVien; i++) {
-            const fakeNhanVien = {
-                HoTenNV: faker.name.findName(),
+        for (let i = 0; i < numFakeStaff; i++) {
+            const fakeStaff = {
+                name: faker.name.findName(),
                 Password: faker.internet.password(),
-                ChucVu: faker.name.jobTitle(),
-                DiaChi: faker.address.streetAddress(),
-                SoDienThoai: faker.phone.phoneNumber()
+                position: faker.name.jobTitle(),
+                address: faker.address.streetAddress(),
+                phone: "001" + faker.phone.phoneNumberFormat(1).replace(/[-()\s]/g, '').slice(1, 11)
             };
-            fakeNhanVienData.push(fakeNhanVien);
+            fakeStaffData.push(fakeStaff);
         }
         
-        await NhanVien.insertMany(fakeNhanVienData);
-        console.log("Dữ liệu nhân viên giả mạo đã được thêm vào CSDL thành công.");
+        await staff.insertMany(fakeStaffData);
+        console.log("Mock employee data has been successfully added to the database");
     } catch (error) {
-        console.error("Lỗi khi thêm dữ liệu giả mạo cho nhân viên:", error.message);
+        console.error("Error when adding mock data for staffs", error.message);
     }
 };
 
-const getAllMaDocGia = async () => {
+const getAllReaderID = async () => {
     try {
-        const docGiaList = await DocGia.find({}, '_id');
-        return docGiaList.map(docGia => docGia._id);
+        const readerList = await reader.find({}, '_id');
+        return readerList.map(reader => reader._id);
     } catch (error) {
-        console.error("Lỗi khi lấy danh sách mã DocGia:", error.message);
+        console.error("Error when fetching the list of Reader IDs", error.message);
         return [];
     }
 };
 
-const getAllMaSach = async () => {
+const getAllBookID = async () => {
     try {
-        const sachList = await Sach.find({}, '_id');
-        return sachList.map(sach => sach._id);
+        const BookList = await book.find({}, '_id');
+        return BookList.map(Book => Book._id);
     } catch (error) {
-        console.error("Lỗi khi lấy danh sách mã Sach:", error.message);
+        console.error("Error when fetching the list of Book IDs", error.message);
         return [];
     }
 };
 
-const createFakeTheoDoiMuonSach = async () => {
+const createFakeBorrow = async () => {
     try {
-        const fakeTheoDoiMuonSachData = [];
-        const numFakeTheoDoiMuonSach = 50;
-        const maDocGiaList = await getAllMaDocGia();
-        const maSachList = await getAllMaSach();
+        const fakeBorrowData = [];
+        const numFakeBorrow = 50;
+        const ReaderIDList = await getAllReaderID();
+        const BookIDList = await getAllBookID();
 
-        for (let i = 0; i < numFakeTheoDoiMuonSach; i++) {
-            const fakeTheoDoiMuonSach = {
-                MaDocGia: faker.random.arrayElement(maDocGiaList),
-                MaSach: faker.random.arrayElement(maSachList),
-                NgayMuon: faker.date.past(),
-                NgayTra: faker.date.between(faker.date.past(), faker.date.future())
+        for (let i = 0; i < numFakeBorrow; i++) {
+            const fakeBorrow = {
+                reader_id: faker.random.arrayElement(ReaderIDList),
+                book_id: faker.random.arrayElement(BookIDList),
+                borrow_date: faker.date.past(),
+                due_date: faker.date.between(faker.date.past(), faker.date.future())
             };
-            fakeTheoDoiMuonSachData.push(fakeTheoDoiMuonSach);
+            fakeBorrowData.push(fakeBorrow);
         }
 
-        await TheoDoiMuonSach.insertMany(fakeTheoDoiMuonSachData);
-        console.log("Dữ liệu theo dõi mượn sách giả mạo đã được thêm vào CSDL thành công.");
+        await borrow.insertMany(fakeBorrowData);
+        console.log("Mock data for book borrowing tracking has been successfully added to the database.");
     } catch (error) {
-        console.error("Lỗi khi thêm dữ liệu giả mạo cho theo dõi mượn sách:", error.message);
+        console.error("Error when adding mock data for book borrowing tracking", error.message);
     }
 };
 
 mongoose.connect(config.db.uri)
     .then(async () => {
-        console.log("Đã kết nối tới CSDL MongoDB.");
+        console.log("Successfully connected to MongoDB database");
 
         await deleteAllData();
 
-        await createFakeNXB();
-        await createFakeDocGia();
-        await createFakeSach();
-        await createFakeNhanVien();
-        await createFakeTheoDoiMuonSach();
+        await createFakePublisher();
+        await createFakeReader();
+        await createFakeBook();
+        await createFakeStaff();
+        await createFakeBorrow();
         
         mongoose.disconnect();
     })
     .catch(error => {
-        console.error("Lỗi khi kết nối tới CSDL MongoDB:", error.message);
+        console.error("Error connecting to MongoDB database:", error.message);
     });

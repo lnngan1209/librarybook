@@ -1,18 +1,27 @@
-<template>
+<template> 
   <div id="app">
+    <AppHeader/>
     <div class="container-fluid mt-3">
-      <router-view/>
+      <RouterView />   
     </div>
   </div>
+    <AppFooter/>
 </template>
 
 <script>
-  export default {
-    name: "App",
+import AppHeader from '../src/components/AppHeader.vue';
+import AppFooter from '../src/components/AppFooter.vue';
 
-  }
+export default {
+  components: {
+    AppHeader,
+    AppFooter,
+  },
+} 
 </script>
 
 <style>
-
+div {
+  margin-bottom: 60px; /* Khoảng cách tương ứng với chiều cao của footer */
+}
 </style>
