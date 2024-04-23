@@ -28,8 +28,13 @@
               <td><input type="text" v-model="newBook.price"></td>
               <td><input type="text" v-model="newBook.quantity"></td>
               <td><input type="text" v-model="newBook.publication_year"></td>
-              <td><input type="text" v-model="newBook.publisher"></td>
               <td>
+                <select v-model="newBook.publisher_id">
+                    <option disabled value="">Select publisher</option>
+                    <option v-for="publisher in publisherList" :key="publisher._id" :value="publisher._id">{{ publisher.name }}</option>
+                </select>
+            </td>              
+          <td>
             <button @click="createBook()"><i class="fa-solid fa-save" 
               :disabled="!(newBook.name && newBook.price && newBook.quantity && newBook.publisher)"></i></button>
           </td>
@@ -53,7 +58,9 @@
           </td>
           <td>
             <div v-if="book._id != onchangeItem">{{ book.publisher_id }}</div>
-            <input v-if="book._id == onchangeItem" type="text" :placeholder="book.publisher" v-model="changevalue.publisher">
+            <select v-if="book._id == onchangeItem" v-model="changevalue.publisher_id">
+              <option v-for="publisher in publisherList" :key="publisher._id" :value="publisher._id">{{ publisher.name }}</option>
+            </select>
           </td>
           <td>
             <button @click="onchange(book._id)"><i class="fa-solid fa-pen"></i></button>           
@@ -74,6 +81,7 @@
     data() {
       return {
         bookList: [],
+        publisherList: [],
         filteredList: [],
         selectedItem: null,
         onchangeItem: '',
@@ -84,15 +92,15 @@
         },
         newBook: {
           name: '',
-          price: 0,
-          quantity: 0,
+          price: '',
+          quantity: '',
           publication_year: '',
           publisher_id: ''
         },
         changevalue: {
           name: '',
-          price: 0,
-          quantity: 0,
+          price: '',
+          quantity: '',
           publication_year: '',
           publisher_id: ''
         },
@@ -101,6 +109,7 @@
     },
     async created() {
       await this.fetchBookList();
+      await this.fetchPublisherList();
     },
     computed: {
     filteredList() {
@@ -123,6 +132,13 @@
           console.error("Error fetching book list", error);
         }
       },
+      async fetchPublisherList() {
+        try {
+          this.publisherList = await PublisherService.getAll();
+        } catch (error) {
+          console.error("Error fetching publisher list", error);
+        }
+},
       toggleFilter() {
       this.showFilter = !this.showFilter;
     },
@@ -146,7 +162,10 @@
       if(this.onchangeItem == book_id){
         this.onchangeItem='';
       }
-      else this.onchangeItem=book_id;
+      else {
+        this.onchangeItem=book_id;
+        this.fetchPublisherList();
+      }
       this.changevalue = {
         name: "",
         price: "",
@@ -156,39 +175,55 @@
       };
     },
     async savechange(oldname, oldprice, oldquantity, oldpublication_year, oldpublisher_id) {
-      if (!(this.changevalue['name'] == "" && this.changevalue['price'] == "" && this.changevalue['quantity'] == "" && this.changevalue['publication_year']=="" && this.changevalue['publisher_id'] == "" )){
-                    const data={};
-                    this.changevalue['name'] != "" ? data['name']=this.changevalue['name'] : data['name']=oldname;                  
-                    this.changevalue['price'] != "" ? data['price']=this.changevalue['price'] : data['price']=oldprice;
-                    this.changevalue['quantity'] != "" ? data['quantity']=this.changevalue['quantity'] : data['quantity']=oldquantity;
-                    this.changevalue['publication_year'] != "" ? data['publication_year']=this.changevalue['publication_year'] : data['publication_year']=oldpublication_year;
-                    this.changevalue['publisher_id'] != "" ? data['publisher_id']=this.changevalue['publisher_id'] : data['publisher_id']=oldpublisher_id;
-                    try {
-                        await PublisherService.update(this.onchangeItem, data);
-                        await this.fetchPublisherList();
-                    }catch (error) {
-                        console.error("LFailed to update publisher", error);
-                    }
-                }
-                this.onchangeItem='';
-                this.changevalue['name']='';
-                this.changevalue['price']='';
-                this.changevalue['quantity']='';
-                this.changevalue['publication_year']='';
-                this.changevalue['publisher_id']='';          
-            },
-    onCreateChange() {
-      if (this.onCreate) {
-        this.newBook = {
-          name: "",
-          price: "",
-          quantity: "",
-          publication_year: "",
-          publisher_id: ""
-        };
-      }
-      this.onCreate = !this.onCreate;
-    },
+  const data = {};
+
+  if (this.changevalue['name'] !== "" && this.changevalue['name'] !== oldname) data['name'] = this.changevalue['name'];
+  if (this.changevalue['price'] !== "" && this.changevalue['price'] !== oldprice) data['price'] = this.changevalue['price'];
+  if (this.changevalue['quantity'] !== "" && this.changevalue['quantity'] !== oldquantity) data['quantity'] = this.changevalue['quantity'];
+  if (this.changevalue['publication_year'] !== "" && this.changevalue['publication_year'] !== oldpublication_year) data['publication_year'] = this.changevalue['publication_year'];
+  if (this.changevalue['publisher_id'] !== "" && this.changevalue['publisher_id'] !== oldpublisher_id) data['publisher_id'] = this.changevalue['publisher_id'];
+
+  try {
+    await BookService.update(this.onchangeItem, data);
+
+
+    
+    // Cập nhật lại thông tin sách trong bookList
+    const updatedBookIndex = this.bookList.findIndex(book => book._id === this.onchangeItem);
+    
+    if (updatedBookIndex !== -1) {
+      Object.assign(this.bookList[updatedBookIndex], data);
+    }
+    this.fetchBookList();
+    this.$message.success('Book updated successfully!');
+  } catch (error) {
+    console.error("Failed to update book", error);
+    this.$message.error('Failed to update book.');
+  } finally {
+    // Reset các giá trị sau khi đã hoàn thành cập nhật và xử lý lỗi
+    this.onchangeItem = '';
+    this.changevalue = {
+      name: '',
+      price: '',
+      quantity: '',
+      publication_year: '',
+      publisher_id: ''
+    };
+  }
+},
+        onCreateChange() {
+          if (this.onCreate) {
+            this.newBook = {
+              name: "",
+              price: "",
+              quantity: "",
+              publication_year: "",
+              publisher_id: ""
+            };
+          }
+          this.onCreate = !this.onCreate;
+          this.fetchPublisherList();
+        },
     async createBook() {
       try {
         if (!this.newBook['name'] =='' || this.newBook['price']=='' || this.newBook['quantity']=='' || this.newBook['publication_year'] =='' || this.newBook['publisher_id']=='' ) {

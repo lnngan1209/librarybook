@@ -48,7 +48,9 @@
           </td>
           <td>
             <button @click="onchange(staff._id)"><i class="fa-solid fa-pen"></i></button>
-            <button v-if="staff._id == onchangeItem" @click="savechange(staff._id, staff.name, staff.position, staff.address, staff.phone)"><i class="fa-solid fa-save"></i></button>
+            <button v-if="staff._id == onchangeItem" @click="savechange(staff._id, staff.name, staff.position, staff.address, staff.phone)">
+              <i class="fa-solid fa-save"></i>
+            </button>
             <button v-if="staff._id == onchangeItem" @click="deleteItem" :disabled="!selectedItem"><i class="fa-solid fa-trash-alt"></i></button>
           </td>
         </tr>
@@ -144,27 +146,25 @@ export default {
             },
 
     async savechange(oldname, oldposition, oldaddress, oldphone) {
-      if (!(this.changevalue['name'] == "" && this.changevalue['position'] == "" && this.changevalue['address'] == "" && this.changevalue['phone'] == "")) {
-        const data = {
-          name: this.changevalue['name'] || oldname,
-          position: this.changevalue['position'] || oldposition,
-          address: this.changevalue['address'] || oldaddress,
-          phone: this.changevalue['phone'] || oldphone
-        };
-        try {
-          await StaffService.update(staff_id, data);
-          await this.fetchStaffList();
-        } catch (error) {
-          console.error("Failed to update staff", error);
-        }
-      }
+      if (!(this.changevalue['name'] == "" && this.changevalue['position'] == "" && this.changevalue['address']=="" && this.changevalue['phone'] == "")){
+                    const data={};
+                    this.changevalue['name'] != "" ? data['name']=this.changevalue['name'] : data['name']=oldname;
+                    this.changevalue['position'] != "" ? data['position']=this.changevalue['position'] : data['position']=oldposition;
+                    this.changevalue['address'] != "" ? data['address']=this.changevalue['address'] : data['address']=oldaddress;
+                    this.changevalue['phone'] != "" ? data['phone']=this.changevalue['phone'] : data['phone']=oldphone;
+                    try {
+                        await StaffService.update(this.onchangeItem, data);
+                        await this.fetchStaffList();
+                    }catch (error) {
+                        console.error("Failed to update Staff", error);
+                    }
+                }
       this.onchangeItem = '';
-      this.changevalue = {
-        name: "",
-        position: "",
-        address: "",
-        phone: ""
-      };
+      this.changevalue['name']='';
+      this.changevalue['position']='';
+      this.changevalue['address']='';
+      this.changevalue['phone']=''
+      
     },
     
     onCreateChange() {
