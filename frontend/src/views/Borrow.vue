@@ -48,19 +48,17 @@
           </tr>
           <tr v-for="borrow in filteredList" :key="borrow._id">
             <td>
-              <select v-if="borrow._id == onchangeItem" v-model="changevalue.book_id">
-                <option disabled value="">Select book</option>
-                <option v-for="book in bookList" :key="book._id" :value="book._id">{{ book.name }}</option>
-              </select>
-              <div v-if="borrow._id != onchangeItem">{{ borrow.book_id }}</div>
-            </td>
+            <div v-if="borrow._id != onchangeItem">{{ borrow.book_id }}</div>
+            <select v-if="borrow._id == onchangeItem" v-model="changevalue.book_id">
+              <option v-for="book in bookList" :key="book._id" :value="book._id">{{ book.name }}</option>
+            </select>
+          </td>
             <td>
-              <select v-if="borrow._id == onchangeItem" v-model="changevalue.reader_id">
-                <option disabled value="">Select reader</option>
-                <option v-for="reader in readerList" :key="reader._id" :value="reader._id">{{ reader.name }}</option>
-              </select>
-              <div v-if="borrow._id != onchangeItem">{{ borrow.reader_id }}</div>
-            </td>
+            <div v-if="borrow._id != onchangeItem">{{ borrow.reader_id }}</div>
+            <select v-if="borrow._id == onchangeItem" v-model="changevalue.reader_id">
+              <option v-for="reader in readerList" :key="reader._id" :value="reader._id">{{ reader.name }}</option>
+            </select>
+          </td>
           <td>
             <div v-if="borrow._id != onchangeItem">{{ borrow.borrow_date }}</div>
             <input v-if="borrow._id == onchangeItem" type="text" :placeholder="borrow.borrow_date" v-model="changevalue.borrow_date">
@@ -149,6 +147,23 @@
           console.error("Error fetching borrowing list:", error);
         }
       },
+          async fetchBookList() {
+        try {
+          this.bookList = await BookService.getAll(); // Giả sử BookService.getAll() là phương thức để lấy tất cả sách từ server
+        } catch (error) {
+          console.error("Error fetching book list:", error);
+          this.$message.error('Failed to fetch book list.');
+        }
+      },
+
+      async fetchReaderList() {
+        try {
+          this.readerList = await ReaderService.getAll(); // Giả sử ReaderService.getAll() là phương thức để lấy tất cả người đọc từ server
+        } catch (error) {
+          console.error("Error fetching reader list:", error);
+          this.$message.error('Failed to fetch reader list.');
+        }
+      },
       toggleFilter() {
       this.showFilter = !this.showFilter;
     },
@@ -174,7 +189,8 @@
       }
       else {
         this.onchangeItem=borrow_id;
-        this.fetchPublisherList();
+        this.fetchBookList();
+        this.fetchReaderList();
       }
         this.changevalue = {
           book_id: "",
@@ -184,8 +200,8 @@
           status: ""
         };
       },
-      async savechange(borrow_id, oldbook_id, oldreader_id, oldborrow_date, olddue_date, oldstatus) {
-  const updatedData = {};
+      async savechange(oldbook_id, oldreader_id, oldborrow_date, olddue_date, oldstatus) {
+  const data = {};
 
   if (this.changevalue['book_id'] !== "" && this.changevalue['book_id'] !== oldbook_id) updatedData['book_id'] = this.changevalue['book_id'];
   if (this.changevalue['reader_id'] !== "" && this.changevalue['reader_id'] !== oldreader_id) updatedData['reader_id'] = this.changevalue['reader_id'];
@@ -194,12 +210,12 @@
   if (this.changevalue['status'] !== "" && this.changevalue['status'] !== oldstatus) updatedData['status'] = this.changevalue['status'];
 
   try {
-    await BorrowService.update(borrow_id, updatedData);
+    await BorrowService.update(this.onchangeItem, data);
     
     // Update borrowList with the updated data
     const updatedBorrowIndex = this.borrowList.findIndex(borrow => borrow._id === borrow_id);
     if (updatedBorrowIndex !== -1) {
-      Object.assign(this.borrowList[updatedBorrowIndex], updatedData);
+      Object.assign(this.borrowList[updatedBorrowIndex], data);
     }
 
     this.fetchBorrowList();
@@ -234,7 +250,7 @@
         },
         async createBorrow() {
         try {
-          if (!this.newBorrow['book_id'] || !this.newBorrow['reader_id'] || !this.newBorrow['borrow_date'] || !this.newBorrow['due_date'] || !this.newBorrow['status']) {
+          if (!this.newBorrow['book_id'] =='' || !this.newBorrow['reader_id']=='' || !this.newBorrow['borrow_date']=='' || !this.newBorrow['due_date']=='' || !this.newBorrow['status']=='') {
             await BorrowService.create(this.newBorrow);
             await this.fetchBorrowList();
           }
