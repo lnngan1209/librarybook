@@ -25,6 +25,7 @@ router.get('/:id', async (req, res, next) => {
         formattedReader = thisreader.toJSON();
         formattedReader['birthday']=moment(thisreader.birthday).format('DD-MM-YYYY');
         res.json(formattedReader);
+        res.json(thisreader);
     } catch (err) {
         next(err);
     }
@@ -37,6 +38,7 @@ router.post('/', async (req, res, next) => {
         formattedNewReader = savedReader.toJSON();
         formattedNewReader['birthday']=moment(savedReader.birthday).format('DD-MM-YYYY');
         res.status(201).json(formattedNewReader);
+        res.status(201).json(savedReader);
     } catch (err) {
         next(err);
     }

@@ -12,8 +12,11 @@
     "@ant-design-vue/nuxt": "^1.4.1",
     "@ant-design/icons": "^5.3.6",
     "@ant-design/icons-vue": "^7.0.1",
+    "ant-design-vue": "^4.0.0-rc.6",
     "axios": "^1.6.8",
-    "vue": "^3.4.15",
+    "bootstrap": "^5.3.3",
+    "bootstrap-vue": "^2.23.1",
+    "vue": "^3.4.23",
     "vue-router": "^4.3.2"
   },
   "devDependencies": {

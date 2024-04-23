@@ -6,8 +6,9 @@
           <tr>
             <th>Name</th>
             <th>Reader</th>
-            <th>Borrow_date</th>
-            <th>Due_date</th>
+            <th>Borrow date</th>
+            <th>Due date</th>
+            <th>Status</th>
           </tr>
         </thead>
         <tbody>
@@ -16,6 +17,7 @@
             <td>{{ borrow.reader_id }}</td>
             <td>{{ borrow.borrow_date }}</td>
             <td>{{ borrow.due_date }}</td>
+            <td>{{ borrow.status }}</td>
           </tr>
         </tbody>
       </table>
@@ -58,14 +60,27 @@
   table {
     width: 100%;
     border-collapse: collapse;
-  }
-  
-  th, td {
-    border: 1px solid #ddd;
-    padding: 8px;
+    text-align: left;
   }
   
   th {
-    background-color: #f2f2f2;
+    background-color: #aaa; /* Màu nền đen cho tiêu đề */
+    color: #333;            /* Màu chữ xám lợt cho tiêu đề */
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: center;     /* Căn giữa ngang */
+    vertical-align: middle; /* Căn giữa dọc */
+}
+
+td {
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: center;     /* Căn giữa ngang */
+    vertical-align: middle; /* Căn giữa dọc */
+}
+  h2 {
+    text-align: center;
+    color: purple;
+    font-size: 35px;
   }
 </style>

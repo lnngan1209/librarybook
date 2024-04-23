@@ -1,17 +1,17 @@
 <template> 
+<AppHeader/>
   <div id="app">
-    <AppHeader/>
+    
     <div class="container-fluid mt-3">
       <RouterView />   
     </div>
   </div>
-    <AppFooter/>
+<AppFooter/>
 </template>
 
 <script>
 import AppHeader from '../src/components/AppHeader.vue';
 import AppFooter from '../src/components/AppFooter.vue';
-
 export default {
   components: {
     AppHeader,

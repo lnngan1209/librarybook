@@ -3,6 +3,7 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
+
 // https://vitejs.dev/config/
 export default defineConfig({
   buildModules: [
@@ -27,7 +28,11 @@ export default defineConfig({
       "/api": {
         target: "http://localhost:3000",
         changeOrigin: true,
+        // Hiển thị log lỗi chi tiết
+        onError: (err) => {
+          console.error("Proxy error:", err);
+        },
       },
-    }
-  },
+    },
+  }
 })

@@ -81,8 +81,8 @@ const createFakeBook = async () => {
 
         for (let i = 0; i < numFakeBook; i++) {
             const fakeBook = {
-                name: faker.lorem.words(),
-                price: faker.datatype.number({ min: 20, max: 100 }),
+                name: generateMeaningfulEnglishSentence(),
+                price: faker.datatype.number({ min: 1, max: 30 }),
                 quantity: faker.datatype.number({ min: 1, max: 100 }),
                 publication_year: faker.datatype.number({ min: 2000, max: 2023 }),
                 publisher_id: faker.random.arrayElement(publisher_idList)
@@ -96,6 +96,24 @@ const createFakeBook = async () => {
         console.error("Error when adding mock data for books", error.message);
     }
 };
+function generateMeaningfulEnglishSentence() {
+    // Danh sách các từ tiếng Anh có nghĩa
+    const meaningfulWords = [
+        'Adventurous', 'Whimsical', 'Mysterious', 'Captivating', 'Enlightening', 'Intriguing', 'Fascinating', 
+        'Extraordinary', 'Enchanting', 'Brilliant', 'Masterpiece', 'Riveting', 'Unforgettable', 'Remarkable', 
+        'Inspirational', 'Profound', 'Eloquent', 'Compelling', 'Mesmerizing', 'Spellbinding', 'Imaginative'
+    ];
+
+    // Chọn 3 từ ngẫu nhiên từ danh sách có nghĩa
+    const titleWords = [];
+    for (let i = 0; i < 3; i++) {
+        const word = faker.random.arrayElement(meaningfulWords);
+        titleWords.push(word);
+    }
+
+    const title = titleWords.join(' ');  // Nối các từ lại với nhau để tạo tên sách
+    return title;
+}
 
 const createFakeStaff = async () => {
     try {
@@ -147,14 +165,17 @@ const createFakeBorrow = async () => {
         const numFakeBorrow = 50;
         const ReaderIDList = await getAllReaderID();
         const BookIDList = await getAllBookID();
+        const today = new Date();
 
         for (let i = 0; i < numFakeBorrow; i++) {
             const fakeBorrow = {
                 reader_id: faker.random.arrayElement(ReaderIDList),
                 book_id: faker.random.arrayElement(BookIDList),
                 borrow_date: faker.date.past(),
-                due_date: faker.date.between(faker.date.past(), faker.date.future())
+                due_date: faker.date.between(faker.date.past(), faker.date.future()),
+                // status: due_date < today ? true : false
             };
+            fakeBorrow.status = fakeBorrow.due_date < today ? true : false;
             fakeBorrowData.push(fakeBorrow);
         }
 

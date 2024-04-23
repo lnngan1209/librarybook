@@ -25,7 +25,8 @@ const borrowSchema = new mongoose.Schema({
     reader_id: { type: String, required: true },
     book_id: { type: String, required: true },
     borrow_date: Date,
-    due_date: Date
+    due_date: Date,
+    status: Boolean
 });
 
 const staffSchema = new mongoose.Schema({
