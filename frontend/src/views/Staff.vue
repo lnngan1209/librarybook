@@ -8,7 +8,7 @@
           <button v-if="isFiltered" @click="unFilter" class="clear-filter-button">Clear filter</button>        
       </div>
       <div class="action-container">
-        <button @click="onCreateChange" class="add-button">Add</button>
+        <button @click="onCreateChange" class="add-button">{{ onCreate ? 'Cancel' : 'Add' }}</button>
       </div>
     </div>
     <table>
@@ -145,27 +145,34 @@ export default {
                 this.changevalue['phone']='';
             },
 
-    async savechange(oldname, oldposition, oldaddress, oldphone) {
-      if (!(this.changevalue['name'] == "" && this.changevalue['position'] == "" && this.changevalue['address']=="" && this.changevalue['phone'] == "")){
-                    const data={};
-                    this.changevalue['name'] != "" ? data['name']=this.changevalue['name'] : data['name']=oldname;
-                    this.changevalue['position'] != "" ? data['position']=this.changevalue['position'] : data['position']=oldposition;
-                    this.changevalue['address'] != "" ? data['address']=this.changevalue['address'] : data['address']=oldaddress;
-                    this.changevalue['phone'] != "" ? data['phone']=this.changevalue['phone'] : data['phone']=oldphone;
-                    try {
-                        await StaffService.update(this.onchangeItem, data);
-                        await this.fetchStaffList();
-                    }catch (error) {
-                        console.error("Failed to update Staff", error);
-                    }
-                }
-      this.onchangeItem = '';
-      this.changevalue['name']='';
-      this.changevalue['position']='';
-      this.changevalue['address']='';
-      this.changevalue['phone']=''
-      
-    },
+            async savechange(oldname, oldposition, oldaddress, oldphone) {
+              if (!(this.changevalue['name'] == "" && this.changevalue['position'] == "" && this.changevalue['address']=="" && this.changevalue['phone'] == "")){
+                  
+                  const data = {
+                      name: this.changevalue['name'] !== "" ? this.changevalue['name'] : oldname,
+                      position: this.changevalue['position'] !== "" ? this.changevalue['position'] : oldposition,
+                      address: this.changevalue['address'] !== "" ? this.changevalue['address'] : oldaddress,
+                      phone: this.changevalue['phone'] !== "" ? this.changevalue['phone'] : oldphone
+                  };
+                  
+                  try {
+                      await StaffService.update(this.onchangeItem, data);
+                      await this.fetchStaffList();
+                  } catch (error) {
+                      console.error("Failed to update Staff", error);
+                  }
+              }
+              
+              this.resetChangeValues();
+          },
+
+resetChangeValues() {
+    this.onchangeItem = '';
+    this.changevalue['name'] = '';
+    this.changevalue['position'] = '';
+    this.changevalue['address'] = '';
+    this.changevalue['phone'] = '';
+},
     
     onCreateChange() {
       if (this.onCreate) {
@@ -295,6 +302,9 @@ button {
 /* FontAwesome Icons */
 button i {
   margin-right: 5px;
+}
+button:hover {
+  background-color: #0056b3;
 }
 
 

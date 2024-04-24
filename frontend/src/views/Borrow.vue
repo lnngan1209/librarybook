@@ -201,39 +201,40 @@
         };
       },
       async savechange(oldbook_id, oldreader_id, oldborrow_date, olddue_date, oldstatus) {
-  const data = {};
+        const data = {};
 
-  if (this.changevalue['book_id'] !== "" && this.changevalue['book_id'] !== oldbook_id) updatedData['book_id'] = this.changevalue['book_id'];
-  if (this.changevalue['reader_id'] !== "" && this.changevalue['reader_id'] !== oldreader_id) updatedData['reader_id'] = this.changevalue['reader_id'];
-  if (this.changevalue['borrow_date'] !== "" && this.changevalue['borrow_date'] !== oldborrow_date) updatedData['borrow_date'] = this.changevalue['borrow_date'];
-  if (this.changevalue['due_date'] !== "" && this.changevalue['due_date'] !== olddue_date) updatedData['due_date'] = this.changevalue['due_date'];
-  if (this.changevalue['status'] !== "" && this.changevalue['status'] !== oldstatus) updatedData['status'] = this.changevalue['status'];
+        
+          if (this.changevalue['book_id'] !== "" && this.changevalue['book_id'] !== oldbook_id) data['book_id'] = this.changevalue['book_id'];
+          if (this.changevalue['reader_id'] !== "" && this.changevalue['reader_id'] !== oldreader_id) data['reader_id'] = this.changevalue['reader_id'];
+          if (this.changevalue['borrow_date'] !== "" && this.changevalue['borrow_date'] !== oldborrow_date) data['borrow_date'] = this.changevalue['borrow_date'];
+          if (this.changevalue['due_date'] !== "" && this.changevalue['due_date'] !== olddue_date) data['due_date'] = this.changevalue['due_date'];
+          if (this.changevalue['status'] !== "" && this.changevalue['status'] !== oldstatus) data['status'] = this.changevalue['status'];
 
-  try {
-    await BorrowService.update(this.onchangeItem, data);
-    
-    // Update borrowList with the updated data
-    const updatedBorrowIndex = this.borrowList.findIndex(borrow => borrow._id === borrow_id);
-    if (updatedBorrowIndex !== -1) {
-      Object.assign(this.borrowList[updatedBorrowIndex], data);
-    }
+        try {
+          await BorrowService.update(this.onchangeItem, data);
+          
+          // Update borrowList with the updated data
+          const updatedBorrowIndex = this.borrowList.findIndex(borrow => borrow._id === borrow_id);
+          if (updatedBorrowIndex !== -1) {
+            Object.assign(this.borrowList[updatedBorrowIndex], data);
+          }
 
-    this.fetchBorrowList();
-    this.$message.success('Borrow updated successfully!');
-  } catch (error) {
-    console.error("Failed to update borrow", error);
-    this.$message.error('Failed to update borrow.');
-  } finally {
-    this.onchangeItem = '';
-    this.changevalue = {
-      book_id: '',
-      reader_id: '',
-      borrow_date: '',
-      due_date: '',
-      status: ''
-    };
-  }
-},
+          this.fetchBorrowList();
+          this.$message.success('Borrow updated successfully!');
+        } catch (error) {
+          console.error("Failed to update borrow", error);
+          this.$message.error('Failed to update borrow.');
+        } finally {
+          this.onchangeItem = '';
+          this.changevalue = {
+            book_id: '',
+            reader_id: '',
+            borrow_date: '',
+            due_date: '',
+            status: ''
+          };
+        }
+      },
       onCreateChange() {
           if (this.onCreate) {
             this.newBorrow = {
@@ -370,6 +371,8 @@ button i {
   margin-right: 5px;
 }
 
-
+button:hover {
+  background-color: #0056b3;
+}
 
 </style>

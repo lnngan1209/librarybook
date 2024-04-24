@@ -268,6 +268,8 @@ button i {
   margin-right: 5px;
 }
 
-
+button:hover {
+  background-color: #0056b3;
+}
 
 </style>

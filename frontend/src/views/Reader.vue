@@ -151,20 +151,29 @@ export default {
     },
     async savechange(oldname, oldbirthday, oldgender, oldaddress, oldphone) {
       if (!(this.changevalue['name'] == "" && this.changevalue['birthday'] == "" && this.changevalue['gender'] == "" && this.changevalue['address']=="" && this.changevalue['phone'] == "" )){
-                    const data={
-                      name: this.changevalue['name'] || oldname,
-                      birthday: this.changevalue['birthday'] || oldbirthday,
-                      gender: this.changevalue['gender'] || oldgender,
-                      address: this.changevalue['address'] || oldaddress,
-                      phone: this.changevalue['phone'] || oldphone
+                    const data={};
+                      if (this.changevalue['name'] !== "" && this.changevalue['name'] !== oldname) data['name'] = this.changevalue['name'];
+                      if (this.changevalue['birthday'] !== "" && this.changevalue['birthday'] !== oldbirthday) data['birthday'] = this.changevalue['birthday'];
+                      if (this.changevalue['gender'] !== "" && this.changevalue['gender'] !== oldgender) data['gender'] = this.changevalue['gender'];
+                      if (this.changevalue['address'] !== "" && this.changevalue['address'] !== oldaddress) data['address'] = this.changevalue['address'];
+                      if (this.changevalue['phone'] !== "" && this.changevalue['phone'] !== oldphone) data['phone'] = this.changevalue['phone'];
+
                     };
                     try {
-                        await ReaderService.update(reader_id, data);
+                        await ReaderService.update(this.onchangeItem, data);
+                        const updatedReaderIndex = this.readerList.findIndex(reader => reader._id === this.onchangeItem);
+    
+                        if (updatedReaderIndex !== -1) {
+                          Object.assign(this.readerList[updatedReaderIndex], data);
+                        }
+                        this.fetchReaderList();
+                        this.$message.success('reader updated successfully!');
                         await this.fetchReaderList();
                     }catch (error) {
-                        console.error("LFailed to update Reader", error);
-                    }
-                }
+                        console.error("Failed to update Reader", error);
+                    }finally {
+                
+              
                 this.onchangeItem='';
                  this.changevalue = {
                   name: "",
@@ -173,7 +182,8 @@ export default {
                   address: "",
                   phone: ""
                 };         
-            },
+            }
+          },
     onCreateChange() {
       if (this.onCreate) {
         this.newReader['name'] = '';
